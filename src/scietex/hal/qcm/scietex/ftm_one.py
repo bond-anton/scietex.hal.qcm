@@ -1,4 +1,5 @@
 """Scietex ftmONE."""
+import asyncio
 
 from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 
@@ -36,7 +37,7 @@ class FtmOne(RS485GatedFTM):
     async def get_version(self) -> str:
         response = await self.read_registers(1030, 3, holding=False)
         if response is not None:
-            return bytes(response).decode()
+            return f"{response[0]:d}.{response[1]:d}.{response[2]:d}"
         return ""
 
     async def get_serial_number(self) -> str:
@@ -44,7 +45,7 @@ class FtmOne(RS485GatedFTM):
             1033, holding=False, byteorder=ByteOrder.BIG_ENDIAN
         )
         if response is not None:
-            return bytes(response).decode()
+            return f"{response:d}"
         return ""
 
     async def check_magick_code(self) -> bool:
@@ -366,8 +367,11 @@ class FtmOne(RS485GatedFTM):
         return 0
 
     async def set_address(self, address: int) -> int:
-        response = await self.write_register(2032, address)
-        if response is not None:
+        new_address = max(1, min(address, 247))
+        await self.write_register(2032, new_address, no_response_expected=False)
+        self.address = new_address
+        response = await self.get_address()
+        if response is not None and response > 0:
             self.address = response
             return response
         return 0
@@ -391,9 +395,14 @@ class FtmOne(RS485GatedFTM):
             new_baudrate = 57600
         else:
             new_baudrate = 115200
-        response = await self.write_register(2032, new_baudrate)
+        response = await self.write_register(2033, new_baudrate, no_response_expected=False)
+        new_con_params = self.con_params
+        new_con_params.baudrate = new_baudrate
+        self.con_params = new_con_params
         if response is not None:
-            self.client.comm_params.baudrate = response
+            return response
+        response = await self.read_register(2033)
+        if response is not None:
             return response
         return 0
 

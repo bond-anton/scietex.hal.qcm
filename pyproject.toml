@@ -19,7 +19,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "msgspec[yaml] ~= 0.19.0",
-    "scietex.hal.serial >= 1.0.4, < 2.0.0",
+    "scietex.hal.serial >= 1.0.5, < 2.0.0",
 ]
 
 [project.urls]
