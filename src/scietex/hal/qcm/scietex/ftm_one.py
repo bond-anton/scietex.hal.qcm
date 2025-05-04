@@ -1,5 +1,4 @@
 """Scietex ftmONE."""
-import asyncio
 
 from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 
@@ -368,7 +367,7 @@ class FtmOne(RS485GatedFTM):
 
     async def set_address(self, address: int) -> int:
         new_address = max(1, min(address, 247))
-        await self.write_register(2032, new_address, no_response_expected=False)
+        await self.write_register(2032, new_address)
         self.address = new_address
         response = await self.get_address()
         if response is not None and response > 0:
@@ -395,7 +394,7 @@ class FtmOne(RS485GatedFTM):
             new_baudrate = 57600
         else:
             new_baudrate = 115200
-        response = await self.write_register(2033, new_baudrate, no_response_expected=False)
+        response = await self.write_register(2033, new_baudrate)
         new_con_params = self.con_params
         new_con_params.baudrate = new_baudrate
         self.con_params = new_con_params

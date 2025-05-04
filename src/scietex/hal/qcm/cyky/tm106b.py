@@ -303,11 +303,7 @@ class TM106B(RS485GatedFTM):
 
     async def set_address(self, address: int) -> int:
         new_address = max(1, min(address, 254))
-        await self.write_register(
-            14,
-            new_address,
-            no_response_expected=False
-        )
+        await self.write_register(14, new_address)
         self.address = new_address
         response = await self.get_address()
         if response is not None and response > 0:
@@ -371,7 +367,7 @@ class TM106B(RS485GatedFTM):
             new_baudrate = 19200
         else:
             new_baudrate = 38400
-        await self.write_register(15, self._baudrate_to_code(new_baudrate), no_response_expected=False)
+        await self.write_register(15, self._baudrate_to_code(new_baudrate))
         new_con_params = self.con_params
         new_con_params.baudrate = new_baudrate
         self.con_params = new_con_params
