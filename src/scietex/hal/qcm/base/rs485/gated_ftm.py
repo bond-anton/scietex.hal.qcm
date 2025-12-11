@@ -1,6 +1,6 @@
 """Gated Film Thickness Monitor with RS485 communication interface."""
 
-from typing import Union, Any
+from typing import Any
 
 from scietex.hal.serial import RS485Client
 
@@ -302,7 +302,7 @@ class RS485GatedFTM(GatedFTM, RS485Client):
         )
         return parameters
 
-    async def read_data(self) -> dict[str, Union[int, float, list[Union[int, float]]]]:
+    async def read_data(self) -> dict[str, int | float | list[int | float]]:
         """Read FTM data in a single request"""
         parameters = await self.read_parameters()
         return {f: getattr(parameters, f) for f in parameters.__struct_fields__}
