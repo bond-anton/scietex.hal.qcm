@@ -2,7 +2,6 @@
 
 import math as m
 
-
 NQ = 1.668e5  # Hz*cm  Frequency const of AT-cut quartz
 RQ = 2.648  # g/cm^3 Density of quartz
 MQ = 2.947e11  # g/(cm*s^2) Shear modulus of quartz

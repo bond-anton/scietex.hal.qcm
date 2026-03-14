@@ -1,0 +1,19 @@
+{
+  "version": "0.2",
+  "ignorePaths": [],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "scietex",
+    "Bondarenko",
+    "msgspec",
+    "setuptools",
+    "pytest",
+    "asyncio",
+    "pylint",
+    "mypy",
+    "pythonpath"
+  ],
+  "ignoreWords": [],
+  "import": []
+}

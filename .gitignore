@@ -6,3 +6,5 @@
 src/scietex.hal.qcm.egg-info
 .coverage
 htmlcov
+uv.lock
+__pycache__
