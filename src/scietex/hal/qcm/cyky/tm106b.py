@@ -1,6 +1,5 @@
 """CYKY TM106B FTM."""
 
-from typing import Optional
 from logging import Logger
 
 from scietex.hal.serial import ModbusSerialConnectionConfig
@@ -10,7 +9,7 @@ from ..base.rs485 import RS485GatedFTM
 from ..base.data import PwmCTRLMode, FTMParameters
 
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods, too-many-positional-arguments
 class TM106B(RS485GatedFTM):
     """TM106B RS485 driver."""
 
@@ -19,7 +18,9 @@ class TM106B(RS485GatedFTM):
         con_params: ModbusSerialConnectionConfig,
         address: int = 1,
         label: str = "FTM",
-        logger: Optional[Logger] = None,
+        logger: Logger | None = None,
+        chunk_size: int | None = None,
+        write_chunk_size: int | None = None,
         **kwargs,
     ):
 
@@ -30,6 +31,8 @@ class TM106B(RS485GatedFTM):
             address=address,
             label=label,
             logger=logger,
+            chunk_size=chunk_size,
+            write_chunk_size=write_chunk_size,
             **kwargs,
         )
 

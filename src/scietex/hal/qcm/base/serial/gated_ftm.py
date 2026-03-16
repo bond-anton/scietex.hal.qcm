@@ -1,7 +1,5 @@
 """Gated Film Thickness Monitor with serial (not modbus) communication interface."""
 
-from typing import Optional
-
 from logging import Logger, getLogger
 from serial import Serial
 
@@ -33,7 +31,7 @@ class SerialGatedFTM(GatedFTM):
         self,
         con_params: SerialConnectionConfig,
         label: str = "FTM",
-        logger: Optional[Logger] = None,
+        logger: Logger | None = None,
         keep_connection: bool = False,
     ):
         self.con_params = con_params
@@ -42,7 +40,7 @@ class SerialGatedFTM(GatedFTM):
             self.logger = getLogger()
         else:
             self.logger = logger
-        self._connection: Optional[Serial] = None
+        self._connection: Serial | None = None
         self.keep_connection = keep_connection
 
     # Serial connection methods

@@ -1,17 +1,50 @@
 """Gated Film Thickness Monitor with RS485 communication interface."""
 
 from typing import Any
+from logging import Logger
 
-from scietex.hal.serial import RS485Client
+from pymodbus.pdu import ModbusPDU, DecodePDU
+from pymodbus.framer import FramerBase
+from scietex.hal.serial import (
+    RS485Client,
+    SerialConnectionConfig,
+    ModbusSerialConnectionConfig,
+)
 
 from ...version import __version__
 from .. import GatedFTM
 from ..data import OutCTRLMode, PwmCTRLMode, FTMParameters, FTMStartCMD, Material
 
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods, too-many-arguments
+# pylint: disable=too-many-positional-arguments, unused-argument
 class RS485GatedFTM(GatedFTM, RS485Client):
     """Quartz crystal gated film thickness monitor"""
+
+    def __init__(
+        self,
+        con_params: SerialConnectionConfig | ModbusSerialConnectionConfig,
+        address: int = 1,
+        label: str = "Gated FTM RS485 Device",
+        custom_framer: type[FramerBase] | None = None,
+        custom_decoder: type[DecodePDU] | None = None,
+        custom_response: list[type[ModbusPDU]] | None = None,
+        chunk_size: int | None = None,
+        write_chunk_size: int | None = None,
+        logger: Logger | None = None,
+        **kwargs,
+    ):
+        RS485Client.__init__(
+            self,
+            con_params=con_params,
+            address=address,
+            custom_framer=custom_framer,
+            custom_decoder=custom_decoder,
+            custom_response=custom_response,
+            chunk_size=chunk_size,
+            write_chunk_size=write_chunk_size,
+            logger=logger,
+        )
 
     # Error processing methods
 

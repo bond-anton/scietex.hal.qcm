@@ -1,5 +1,8 @@
 """Scietex ftmONE."""
 
+from logging import Logger
+
+from scietex.hal.serial import ModbusSerialConnectionConfig
 from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 
 from ..base.data import Material, OutCTRLMode, PwmCTRLMode, FTMParameters
@@ -17,9 +20,32 @@ SCALE_FACTOR_SCALE = 100
 CTRL_PWM_VALUE_SCALE = 100
 
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods, too-many-positional-arguments
 class FtmOne(RS485GatedFTM):
     """Scietex ftmONE RS485 driver."""
+
+    def __init__(
+        self,
+        con_params: ModbusSerialConnectionConfig,
+        address: int = 1,
+        label: str = "Scietex FTM",
+        logger: Logger | None = None,
+        chunk_size: int | None = 8,
+        write_chunk_size: int | None = 8,
+        **kwargs,
+    ):
+
+        # pylint: disable=too-many-arguments, duplicate-code
+        con_params.framer = "RTU"
+        super().__init__(
+            con_params=con_params,
+            address=address,
+            label=label,
+            logger=logger,
+            chunk_size=chunk_size,
+            write_chunk_size=write_chunk_size,
+            **kwargs,
+        )
 
     async def get_vendor(self) -> str:
         response = await self.read_registers(1000, 10, holding=False)
@@ -201,7 +227,10 @@ class FtmOne(RS485GatedFTM):
 
     async def get_thickness_std(self) -> float:
         response = await self.read_two_registers_float(
-            2014, factor=THICKNESS_STD_SCALE, signed=False, byteorder=ByteOrder.BIG_ENDIAN
+            2014,
+            factor=THICKNESS_STD_SCALE,
+            signed=False,
+            byteorder=ByteOrder.BIG_ENDIAN,
         )
         if response is not None:
             return response
@@ -428,8 +457,13 @@ class FtmOne(RS485GatedFTM):
 
     async def read_parameters(self) -> FTMParameters:
         # pylint: disable=duplicate-code
+        # response: list[int] = []
         response = await self.read_registers(2004, count=21)
-        if response is not None:
+        # for i in range(3):
+        #     response1 = await self.read_registers(2004 + i * 7, count=7)
+        #     if response1 is not None:
+        #         response += response1
+        if response and len(response) == 21:
             running = bool(response[0])
             frequency = (
                 combine_32bit(response[4], response[5], byteorder=ByteOrder.BIG_ENDIAN)

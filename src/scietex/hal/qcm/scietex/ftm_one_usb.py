@@ -1,7 +1,6 @@
 """USB-CDC driver for Scietex ftmONE."""
 
 import asyncio
-from typing import Optional
 from logging import Logger
 import json
 
@@ -33,7 +32,7 @@ class FtmOneUSB(SerialGatedFTM):
         self,
         con_params: SerialConnectionConfig,
         label: str = "FTM",
-        logger: Optional[Logger] = None,
+        logger: Logger | None = None,
         keep_connection: bool = False,
     ):
         super().__init__(con_params, label, logger, keep_connection)
@@ -363,7 +362,8 @@ class FtmOneUSB(SerialGatedFTM):
             self._connection.write(command)
             response = json.loads(self._connection.readline().decode().strip())
             return Material(
-                density=response["d"] / DENSITY_SCALE, z_ratio=response["z"] / Z_RATIO_SCALE
+                density=response["d"] / DENSITY_SCALE,
+                z_ratio=response["z"] / Z_RATIO_SCALE,
             )
         return Material(density=0.0, z_ratio=0.0)
 
@@ -380,7 +380,8 @@ class FtmOneUSB(SerialGatedFTM):
             self._connection.write(command)
             response = json.loads(self._connection.readline().decode().strip())
             return Material(
-                density=response["d"] / DENSITY_SCALE, z_ratio=response["z"] / Z_RATIO_SCALE
+                density=response["d"] / DENSITY_SCALE,
+                z_ratio=response["z"] / Z_RATIO_SCALE,
             )
         return Material(density=0.0, z_ratio=0.0)
 

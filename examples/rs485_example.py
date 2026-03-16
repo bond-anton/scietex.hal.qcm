@@ -1,7 +1,6 @@
 """Example of RS485 gated FTM operation."""
 
 import asyncio
-from typing import Type
 
 from scietex.hal.serial import ModbusSerialConnectionConfig
 from scietex.hal.serial.utilities.serial_port_finder import find_rs485
@@ -13,15 +12,18 @@ from scietex.hal.qcm.cyky import TM106B
 from scietex.hal.qcm.scietex import FtmOne
 
 
-# pylint: disable=too-many-locals,too-many-statements
+# pylint: disable=too-many-locals,too-many-statements, pointless-string-statement, duplicate-code
 async def main(
-    ftm_cls: Type[RS485GatedFTM], modbus_config: ModbusSerialConnectionConfig, address: int
+    ftm_cls: type[RS485GatedFTM],
+    modbus_config: ModbusSerialConnectionConfig,
+    address: int,
 ):
     """Main coroutine."""
     ftm = ftm_cls(modbus_config, address=address, label="Scietex FTM")
     orig_baudrate = await ftm.get_baudrate()
     orig_address = await ftm.get_address()
     print(f"BR: {orig_baudrate}, ADDR: {orig_address}")
+    """
     new_baudrate = 9600
     print(f"Changing baudrate to {new_baudrate}")
     await ftm.set_baudrate(new_baudrate)
@@ -66,11 +68,17 @@ async def main(
     averaging_window = await ftm.get_averaging()
     averaging_progress = await ftm.get_averaging_progress()
     print(f"Averaging: {averaging_progress}/{averaging_window}")
-
+    """
     # await ftm.set_averaging(0)
     # await asyncio.sleep(1)
     await ftm.start_measurement(reset=True)
     for i in range(10):
+        data = await ftm.read_registers(2000, count=21)
+        print("ZZZZZZZ")
+        print(data)
+        print("ZZZZZZZ")
+        parameters = await ftm.read_parameters()
+        print(f"Parameters: {parameters}")
         frequency = await ftm.get_frequency()
         counter = await ftm.get_counter()
         print(f"{i:02d}) f={frequency}, CNT={counter}")
