@@ -9,4 +9,3 @@ htmlcov
 uv.lock
 __pycache__
 build
-.vscode
