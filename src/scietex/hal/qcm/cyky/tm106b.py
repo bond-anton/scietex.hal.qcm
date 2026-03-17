@@ -57,7 +57,7 @@ class TM106B(RS485GatedFTM):
         Parse CON parameters from register data.
         a: 0-11 gate time = a * 100ms
         b: Analog output (b=0 stop, b=1 auto, b=2 manual)
-        c: rate calculation algorythm (c=0 immediate, c=1 weighted, c=2 10-average)
+        c: rate calculation algorithm (c=0 immediate, c=1 weighted, c=2 10-average)
         """
         coded_str = f"{con:04x}"
         a = int(coded_str[0], 16)
@@ -70,7 +70,7 @@ class TM106B(RS485GatedFTM):
         Get and parse CON parameters from register data.
         a: 0-11 gate time = a * 100ms
         b: Analog output (b=0 stop, b=1 auto, b=2 manual)
-        c: rate calculation algorythm (c=0 immediate, c=1 weighted, c=2 10-average)
+        c: rate calculation algorithm (c=0 immediate, c=1 weighted, c=2 10-average)
         """
         response = await self.read_register(8)
         if response is not None:
@@ -87,7 +87,7 @@ class TM106B(RS485GatedFTM):
         Set CON values to register.
         a: 0-11 gate time = a * 100ms
         b: Analog output (b=0 stop, b=1 auto, b=2 manual)
-        c: rate calculation algorythm (c=0 immediate, c=1 weighted, c=2 10-average)
+        c: rate calculation algorithm (c=0 immediate, c=1 weighted, c=2 10-average)
         """
         a = int(round(max(1, min(a, 10))))
         b = int(round(max(0, min(b, 2))))
