@@ -5,18 +5,22 @@ It provides an abstract base class (`QCM`), which in its turn inherits `scietex.
 The concrete implementations for two models of QCM manufactured by Scietex and CYKY are provided.
 
 ## Features
-- Abstract base class (`VFD`) for consistent VFD implementations.
-- Implemented VFD models:
+
+- Abstract base class (`GatedFTM`) for consistent FTM implementations.
+- Implemented FTM models:
   - `Scietex ftmONE`.
   - `CYKY TM106B`.
 
 ## Installation
+
 Install the package via pip (assuming it’s published to PyPI):
+
 ```bash
 pip install scietex.hal.qcm
 ```
 
 Alternatively, clone the repository and install locally:
+
 ```bash
 git clone https://github.com/bond-anton/scietex.hal.qcm.git
 cd scietex.hal.qcm
@@ -25,8 +29,8 @@ pip install .
 
 ## Requirements
 
- - Python 3.9 or higher.
- - `scietex.hal.serial` (For RS485 communication support).
+- Python 3.10 or higher.
+- `scietex.hal.serial` (For RS485 communication support).
 
 ## Contributing
 

@@ -8,3 +8,5 @@ src/scietex.hal.qcm.egg-info
 htmlcov
 uv.lock
 __pycache__
+build
+.vscode

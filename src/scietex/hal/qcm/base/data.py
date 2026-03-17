@@ -37,6 +37,7 @@ class QCMError(msgspec.Struct, frozen=True):
 class FTMParameters(msgspec.Struct, frozen=True):
     """Model for FTM operational parameters."""
 
+    connected: bool = False  # FTM connection status
     frequency: float = 0.0  # Sensor frequency
     frequency_std: float = 0.0  # Sensor frequency standard deviation
     averaging_window: int = 1  # Averaging window size
@@ -49,6 +50,7 @@ class FTMParameters(msgspec.Struct, frozen=True):
     material_z_ratio: float = 0.0  # Material Z-ratio
     running: bool = False  # Current FTM measurement running state
     scale: float = 1.0  # Scale (tooling) factor
+    connected: bool = False  # FTM connection status
 
     def __str__(self) -> str:
         return (
@@ -60,6 +62,7 @@ class FTMParameters(msgspec.Struct, frozen=True):
             f"material density={self.material_density} g/cm^3, "
             f"material Z-ratio={self.material_z_ratio}, "
             f"running={self.running})"
+            f"connected={self.connected})"
         )
 
 

@@ -12,7 +12,12 @@
     "asyncio",
     "pylint",
     "mypy",
-    "pythonpath"
+    "pythonpath",
+    "modbus",
+    "pymodbus",
+    "baudrate",
+    "bytesize",
+    "cyky"
   ],
   "ignoreWords": [],
   "import": []

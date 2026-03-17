@@ -27,7 +27,8 @@ async def main(ftm_cls: type[SerialGatedFTM], serial_config: SerialConnectionCon
         baudrate = await ftm.get_rs485_baudrate()
         address = await ftm.get_rs485_address()
         print(f"BR: {baudrate}, ADDR: {address}")
-    ftm.pin = 1234
+    if isinstance(ftm, FtmOneUSB):
+        ftm.pin = 1234
     vendor = await ftm.get_vendor()
     product_name = await ftm.get_product_name()
     version = await ftm.get_version()

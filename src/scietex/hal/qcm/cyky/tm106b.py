@@ -152,7 +152,9 @@ class TM106B(RS485GatedFTM):
         return 0.0
 
     async def get_rate(self) -> float:
-        rate = await self.read_two_registers_float(3, factor=100, byteorder=ByteOrder.BIG_ENDIAN)
+        rate = await self.read_two_registers_float(
+            3, factor=100, byteorder=ByteOrder.BIG_ENDIAN
+        )
         if isinstance(rate, float):
             return rate
         self.logger.error("%s: can not read rate data.", self.label)
@@ -376,17 +378,28 @@ class TM106B(RS485GatedFTM):
         self.con_params = new_con_params
         return await self.get_baudrate()
 
+    async def check_connection(self):
+        vendor = await self.get_vendor()
+        if vendor:
+            return True
+        return False
+
     # Read FTM state in a single request
 
     async def read_parameters(self) -> FTMParameters:
         reg_data = await self.read_registers(1, count=12)
         if reg_data is not None:
             thickness = (
-                combine_32bit(reg_data[0], reg_data[1], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
+                combine_32bit(reg_data[0], reg_data[1], byteorder=ByteOrder.BIG_ENDIAN)
+                / 100.0
             )
-            rate = combine_32bit(reg_data[2], reg_data[3], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
+            rate = (
+                combine_32bit(reg_data[2], reg_data[3], byteorder=ByteOrder.BIG_ENDIAN)
+                / 100.0
+            )
             frequency = (
-                combine_32bit(reg_data[4], reg_data[5], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
+                combine_32bit(reg_data[4], reg_data[5], byteorder=ByteOrder.BIG_ENDIAN)
+                / 100.0
             )
             _, _, c = self._parse_con(reg_data[7])
             averaging_window = self._parse_averaging(c)
@@ -408,6 +421,7 @@ class TM106B(RS485GatedFTM):
                 material_z_ratio=material_z_ratio,
                 running=running,
                 scale=scale,
+                connected=True,
             )
         else:
             parameters = FTMParameters()

@@ -225,7 +225,9 @@ class RS485GatedFTM(GatedFTM, RS485Client):
 
     async def set_ctrl_out_mode(self, mode: OutCTRLMode) -> OutCTRLMode:
         """Set the mode of the control output."""
-        self.logger.debug("%s: set_ctrl_out_mode(%s) call", self.label, mode.name.capitalize())
+        self.logger.debug(
+            "%s: set_ctrl_out_mode(%s) call", self.label, mode.name.capitalize()
+        )
         return await self.get_ctrl_out_mode()
 
     async def get_ctrl_out_value(self) -> bool:
@@ -245,7 +247,9 @@ class RS485GatedFTM(GatedFTM, RS485Client):
 
     async def set_ctrl_pwm_mode(self, mode: PwmCTRLMode) -> PwmCTRLMode:
         """Set the mode of the PWM output."""
-        self.logger.debug("%s: set_ctrl_pwm_mode(%s) call", self.label, mode.name.capitalize())
+        self.logger.debug(
+            "%s: set_ctrl_pwm_mode(%s) call", self.label, mode.name.capitalize()
+        )
         return await self.get_ctrl_pwm_mode()
 
     async def get_ctrl_pwm_value(self) -> float:
@@ -301,6 +305,11 @@ class RS485GatedFTM(GatedFTM, RS485Client):
         self.logger.debug("%s: set_baudrate(%d) call", self.label, baudrate)
         return await self.get_baudrate()
 
+    async def check_connection(self) -> bool:
+        """Set RS-485 baudrate."""
+        self.logger.debug("%s: check_connection call", self.label)
+        return False
+
     # Read FTM state in a single request
 
     # pylint: disable=duplicate-code
@@ -319,6 +328,7 @@ class RS485GatedFTM(GatedFTM, RS485Client):
         material_z_ratio = await self.get_material_z_ratio()
         running = await self.get_running_state()
         scale = await self.get_ftm_scale()
+        connected: bool = await self.check_connection()
         parameters = FTMParameters(
             frequency=frequency,
             frequency_std=frequency_std,
@@ -332,6 +342,7 @@ class RS485GatedFTM(GatedFTM, RS485Client):
             material_z_ratio=material_z_ratio,
             running=running,
             scale=scale,
+            connected=connected,
         )
         return parameters
 
