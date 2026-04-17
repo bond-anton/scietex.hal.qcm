@@ -5,8 +5,8 @@ from logging import Logger
 from scietex.hal.serial import ModbusSerialConnectionConfig
 from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 
+from ..base.data import FTMParameters, PwmCTRLMode
 from ..base.rs485 import RS485GatedFTM
-from ..base.data import PwmCTRLMode, FTMParameters
 
 
 # pylint: disable=too-many-public-methods, too-many-positional-arguments
@@ -152,9 +152,7 @@ class TM106B(RS485GatedFTM):
         return 0.0
 
     async def get_rate(self) -> float:
-        rate = await self.read_two_registers_float(
-            3, factor=100, byteorder=ByteOrder.BIG_ENDIAN
-        )
+        rate = await self.read_two_registers_float(3, factor=100, byteorder=ByteOrder.BIG_ENDIAN)
         if isinstance(rate, float):
             return rate
         self.logger.error("%s: can not read rate data.", self.label)
@@ -390,16 +388,11 @@ class TM106B(RS485GatedFTM):
         reg_data = await self.read_registers(1, count=12)
         if reg_data is not None:
             thickness = (
-                combine_32bit(reg_data[0], reg_data[1], byteorder=ByteOrder.BIG_ENDIAN)
-                / 100.0
+                combine_32bit(reg_data[0], reg_data[1], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
             )
-            rate = (
-                combine_32bit(reg_data[2], reg_data[3], byteorder=ByteOrder.BIG_ENDIAN)
-                / 100.0
-            )
+            rate = combine_32bit(reg_data[2], reg_data[3], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
             frequency = (
-                combine_32bit(reg_data[4], reg_data[5], byteorder=ByteOrder.BIG_ENDIAN)
-                / 100.0
+                combine_32bit(reg_data[4], reg_data[5], byteorder=ByteOrder.BIG_ENDIAN) / 100.0
             )
             _, _, c = self._parse_con(reg_data[7])
             averaging_window = self._parse_averaging(c)
@@ -409,6 +402,7 @@ class TM106B(RS485GatedFTM):
             material_z_ratio = reg_data[10] / 1000.0
             scale = reg_data[11] / 1000.0
             parameters = FTMParameters(
+                connected=True,
                 frequency=frequency,
                 frequency_std=0.0,
                 averaging_window=averaging_window,
@@ -421,7 +415,6 @@ class TM106B(RS485GatedFTM):
                 material_z_ratio=material_z_ratio,
                 running=running,
                 scale=scale,
-                connected=True,
             )
         else:
             parameters = FTMParameters()

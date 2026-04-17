@@ -1,19 +1,19 @@
 """Gated Film Thickness Monitor with RS485 communication interface."""
 
-from typing import Any
 from logging import Logger
+from typing import Any
 
-from pymodbus.pdu import ModbusPDU, DecodePDU
 from pymodbus.framer import FramerBase
+from pymodbus.pdu import DecodePDU, ModbusPDU
 from scietex.hal.serial import (
+    ModbusSerialConnectionConfig,
     RS485Client,
     SerialConnectionConfig,
-    ModbusSerialConnectionConfig,
 )
 
 from ...version import __version__
 from .. import GatedFTM
-from ..data import OutCTRLMode, PwmCTRLMode, FTMParameters, FTMStartCMD, Material
+from ..data import FTMParameters, FTMStartCMD, Material, OutCTRLMode, PwmCTRLMode
 
 
 # pylint: disable=too-many-public-methods, too-many-arguments
@@ -225,9 +225,7 @@ class RS485GatedFTM(GatedFTM, RS485Client):
 
     async def set_ctrl_out_mode(self, mode: OutCTRLMode) -> OutCTRLMode:
         """Set the mode of the control output."""
-        self.logger.debug(
-            "%s: set_ctrl_out_mode(%s) call", self.label, mode.name.capitalize()
-        )
+        self.logger.debug("%s: set_ctrl_out_mode(%s) call", self.label, mode.name.capitalize())
         return await self.get_ctrl_out_mode()
 
     async def get_ctrl_out_value(self) -> bool:
@@ -247,9 +245,7 @@ class RS485GatedFTM(GatedFTM, RS485Client):
 
     async def set_ctrl_pwm_mode(self, mode: PwmCTRLMode) -> PwmCTRLMode:
         """Set the mode of the PWM output."""
-        self.logger.debug(
-            "%s: set_ctrl_pwm_mode(%s) call", self.label, mode.name.capitalize()
-        )
+        self.logger.debug("%s: set_ctrl_pwm_mode(%s) call", self.label, mode.name.capitalize())
         return await self.get_ctrl_pwm_mode()
 
     async def get_ctrl_pwm_value(self) -> float:

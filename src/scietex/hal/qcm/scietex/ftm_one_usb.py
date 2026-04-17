@@ -1,15 +1,15 @@
 """USB-CDC driver for Scietex ftmONE."""
 
 import asyncio
-from logging import Logger
 import json
+from logging import Logger
 
 from scietex.hal.serial import SerialConnectionConfig
 from scietex.hal.serial.utilities.serial_port_finder import find_stm32_cdc
 
+from ..base.data import Material, OutCTRLMode, QCMError
 from ..base.serial import SerialGatedFTM, manage_connection
-from ..base.data import QCMError, Material, OutCTRLMode
-from .utils import baudrate_check, address_check
+from .utils import address_check, baudrate_check
 
 
 def find_ftm_one_usb() -> list[str]:

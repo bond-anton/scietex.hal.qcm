@@ -1,11 +1,13 @@
 """Example of RS485 gated FTM operation."""
 
+import asyncio
 import logging
 
-import asyncio
-
-from scietex.hal.serial import ModbusSerialConnectionConfig, SerialConnectionConfig
-from scietex.hal.serial import VirtualSerialNetwork
+from scietex.hal.serial import (
+    ModbusSerialConnectionConfig,
+    SerialConnectionConfig,
+    VirtualSerialNetwork,
+)
 from scietex.hal.serial.utilities.serial_port_finder import find_rs485
 
 from scietex.hal.qcm.base.data import Material

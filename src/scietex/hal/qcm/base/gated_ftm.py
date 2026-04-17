@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from .data import QCMError, PwmCTRLMode, OutCTRLMode, FTMParameters, Material
+from .data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode, QCMError
 
 
 # pylint: disable=too-many-public-methods

@@ -5,9 +5,8 @@ import asyncio
 from scietex.hal.serial import ModbusSerialConnectionConfig
 from scietex.hal.serial.utilities.serial_port_finder import find_rs485
 
-from scietex.hal.qcm.base.rs485 import RS485GatedFTM
-
 from scietex.hal.qcm.base.data import Material
+from scietex.hal.qcm.base.rs485 import RS485GatedFTM
 from scietex.hal.qcm.cyky import TM106B
 from scietex.hal.qcm.scietex import FtmOne
 

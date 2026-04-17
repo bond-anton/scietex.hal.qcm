@@ -1,13 +1,13 @@
 """Gated Film Thickness Monitor with serial (not modbus) communication interface."""
 
 from logging import Logger, getLogger
-from serial import Serial
 
 from scietex.hal.serial import SerialConnectionConfig
+from serial import Serial
 
 from ...version import __version__
 from .. import GatedFTM
-from ..data import OutCTRLMode, PwmCTRLMode, FTMParameters, Material
+from ..data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode
 
 
 def manage_connection(func):

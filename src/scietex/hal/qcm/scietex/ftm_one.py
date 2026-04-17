@@ -5,7 +5,7 @@ from logging import Logger
 from scietex.hal.serial import ModbusSerialConnectionConfig
 from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 
-from ..base.data import Material, OutCTRLMode, PwmCTRLMode, FTMParameters
+from ..base.data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode
 from ..base.rs485 import RS485GatedFTM
 
 # pylint: disable=duplicate-code
@@ -81,9 +81,7 @@ class FtmOne(RS485GatedFTM):
         return False
 
     async def get_mcu_frequency(self) -> int:
-        response = await self.read_two_registers_int(
-            2000, byteorder=ByteOrder.BIG_ENDIAN
-        )
+        response = await self.read_two_registers_int(2000, byteorder=ByteOrder.BIG_ENDIAN)
         if response is not None:
             return response
         return 0
@@ -134,9 +132,7 @@ class FtmOne(RS485GatedFTM):
     async def get_gate_time(self) -> float:
         response = await self.read_registers(2000, count=4, signed=False)
         if response is not None:
-            mcu_frequency = combine_32bit(
-                response[0], response[1], byteorder=ByteOrder.BIG_ENDIAN
-            )
+            mcu_frequency = combine_32bit(response[0], response[1], byteorder=ByteOrder.BIG_ENDIAN)
             prescaler = response[2]
             count = response[3]
             gate_freq = mcu_frequency / prescaler
@@ -175,9 +171,7 @@ class FtmOne(RS485GatedFTM):
         return 0.0
 
     async def get_counter(self) -> int:
-        response = await self.read_two_registers_int(
-            2006, byteorder=ByteOrder.BIG_ENDIAN
-        )
+        response = await self.read_two_registers_int(2006, byteorder=ByteOrder.BIG_ENDIAN)
         if response is not None:
             return response
         return 0
@@ -251,9 +245,7 @@ class FtmOne(RS485GatedFTM):
         return 0.0
 
     async def get_material_density(self) -> float:
-        response = await self.read_register_float(
-            2018, factor=DENSITY_SCALE, signed=False
-        )
+        response = await self.read_register_float(2018, factor=DENSITY_SCALE, signed=False)
         if response is not None:
             return response
         return 0.0
@@ -267,9 +259,7 @@ class FtmOne(RS485GatedFTM):
         return 0.0
 
     async def get_material_z_ratio(self) -> float:
-        response = await self.read_register_float(
-            2019, factor=Z_RATIO_SCALE, signed=False
-        )
+        response = await self.read_register_float(2019, factor=Z_RATIO_SCALE, signed=False)
         if response is not None:
             return response
         return 0.0
@@ -305,9 +295,7 @@ class FtmOne(RS485GatedFTM):
         return Material(density=0, z_ratio=0)
 
     async def get_ftm_scale(self) -> float:
-        response = await self.read_register_float(
-            2020, factor=SCALE_FACTOR_SCALE, signed=False
-        )
+        response = await self.read_register_float(2020, factor=SCALE_FACTOR_SCALE, signed=False)
         if response is not None:
             return response
         return 0.0
@@ -379,9 +367,7 @@ class FtmOne(RS485GatedFTM):
         return 0.0
 
     async def set_ctrl_pwm_value(self, value: float) -> float:
-        response = await self.write_register(
-            2029, int(round(value * CTRL_PWM_VALUE_SCALE))
-        )
+        response = await self.write_register(2029, int(round(value * CTRL_PWM_VALUE_SCALE)))
         if response is not None:
             return response
         return 0.0
@@ -498,30 +484,25 @@ class FtmOne(RS485GatedFTM):
                 / THICKNESS_SCALE
             )
             thickness_std = (
-                combine_32bit(
-                    response[10], response[11], byteorder=ByteOrder.BIG_ENDIAN
-                )
+                combine_32bit(response[10], response[11], byteorder=ByteOrder.BIG_ENDIAN)
                 / THICKNESS_STD_SCALE
             )
             rate = (
-                combine_32bit(
-                    response[12], response[13], byteorder=ByteOrder.BIG_ENDIAN
-                )
+                combine_32bit(response[12], response[13], byteorder=ByteOrder.BIG_ENDIAN)
                 / RATE_SCALE
             )
             material_density = response[14] / DENSITY_SCALE
             material_z_ratio = response[15] / Z_RATIO_SCALE
             scale = response[16] / SCALE_FACTOR_SCALE
             target = (
-                combine_32bit(
-                    response[17], response[18], byteorder=ByteOrder.BIG_ENDIAN
-                )
+                combine_32bit(response[17], response[18], byteorder=ByteOrder.BIG_ENDIAN)
                 / TARGET_THICKNESS_SCALE
             )
             averaging_window = response[19]
             averaging_progress = response[20]
 
             parameters = FTMParameters(
+                connected=True,
                 frequency=frequency,
                 frequency_std=frequency_std,
                 averaging_window=averaging_window,
@@ -534,7 +515,6 @@ class FtmOne(RS485GatedFTM):
                 material_z_ratio=material_z_ratio,
                 running=running,
                 scale=scale,
-                connected=True,
             )
         else:
             parameters = FTMParameters()

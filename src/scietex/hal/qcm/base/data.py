@@ -1,6 +1,7 @@
 """Data models for the QCM."""
 
 from enum import Enum
+
 import msgspec
 
 
@@ -50,7 +51,6 @@ class FTMParameters(msgspec.Struct, frozen=True):
     material_z_ratio: float = 0.0  # Material Z-ratio
     running: bool = False  # Current FTM measurement running state
     scale: float = 1.0  # Scale (tooling) factor
-    connected: bool = False  # FTM connection status
 
     def __str__(self) -> str:
         return (

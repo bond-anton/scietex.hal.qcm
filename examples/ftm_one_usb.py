@@ -6,9 +6,8 @@ import asyncio
 
 from scietex.hal.serial import SerialConnectionConfig
 
-from scietex.hal.qcm.base.serial import SerialGatedFTM
-
 from scietex.hal.qcm.base.data import Material
+from scietex.hal.qcm.base.serial import SerialGatedFTM
 from scietex.hal.qcm.scietex import FtmOneUSB, find_ftm_one_usb
 
 

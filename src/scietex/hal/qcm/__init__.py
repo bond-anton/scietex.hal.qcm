@@ -1,6 +1,6 @@
 """QCM HAL module"""
 
-from .version import __version__
 from .base import GatedFTM
+from .version import __version__
 
 __all__ = ["__version__", "GatedFTM"]
