@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 from .data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode, QCMError
 
 
-# pylint: disable=too-many-public-methods
 class GatedFTM(ABC):
     """Gated Film Thickness Monitor interface class."""
 

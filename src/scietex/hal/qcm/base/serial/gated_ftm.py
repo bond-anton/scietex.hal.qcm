@@ -23,7 +23,6 @@ def manage_connection(func):
     return wrapper
 
 
-# pylint: disable=too-many-public-methods, duplicate-code
 class SerialGatedFTM(GatedFTM):
     """Quartz crystal gated film thickness monitor"""
 

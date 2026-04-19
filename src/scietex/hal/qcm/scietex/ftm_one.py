@@ -8,7 +8,6 @@ from scietex.hal.serial.utilities.numeric import ByteOrder, combine_32bit
 from ..base.data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode
 from ..base.rs485 import RS485GatedFTM
 
-# pylint: disable=duplicate-code
 FREQUENCY_SCALE = 100
 THICKNESS_SCALE = 100
 THICKNESS_STD_SCALE = 100
@@ -20,7 +19,6 @@ SCALE_FACTOR_SCALE = 100
 CTRL_PWM_VALUE_SCALE = 100
 
 
-# pylint: disable=too-many-public-methods, too-many-positional-arguments
 class FtmOne(RS485GatedFTM):
     """Scietex ftmONE RS485 driver."""
 
@@ -35,7 +33,6 @@ class FtmOne(RS485GatedFTM):
         **kwargs,
     ):
 
-        # pylint: disable=too-many-arguments, duplicate-code
         con_params.framer = "RTU"
         super().__init__(
             con_params=con_params,
@@ -462,13 +459,7 @@ class FtmOne(RS485GatedFTM):
         return False
 
     async def read_parameters(self) -> FTMParameters:
-        # pylint: disable=duplicate-code
-        # response: list[int] = []
         response = await self.read_registers(2004, count=21)
-        # for i in range(3):
-        #     response1 = await self.read_registers(2004 + i * 7, count=7)
-        #     if response1 is not None:
-        #         response += response1
         if response and len(response) == 21:
             running = bool(response[0])
             frequency = (

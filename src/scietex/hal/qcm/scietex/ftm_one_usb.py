@@ -24,7 +24,6 @@ Z_RATIO_SCALE = 1000
 SCALE_FACTOR_SCALE = 100
 
 
-# pylint: disable=too-many-public-methods
 class FtmOneUSB(SerialGatedFTM):
     """USB driver for Scietex ftmONE Film Thickness Monitor."""
 

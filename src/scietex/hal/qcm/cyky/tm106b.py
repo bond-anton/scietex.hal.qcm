@@ -9,7 +9,6 @@ from ..base.data import FTMParameters, PwmCTRLMode
 from ..base.rs485 import RS485GatedFTM
 
 
-# pylint: disable=too-many-public-methods, too-many-positional-arguments
 class TM106B(RS485GatedFTM):
     """TM106B RS485 driver."""
 
@@ -24,7 +23,6 @@ class TM106B(RS485GatedFTM):
         **kwargs,
     ):
 
-        # pylint: disable=too-many-arguments, duplicate-code
         con_params.framer = "ASCII"
         super().__init__(
             con_params=con_params,

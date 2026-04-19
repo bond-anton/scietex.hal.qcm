@@ -11,7 +11,6 @@ from scietex.hal.qcm.cyky import TM106B
 from scietex.hal.qcm.scietex import FtmOne
 
 
-# pylint: disable=too-many-locals,too-many-statements, pointless-string-statement, duplicate-code
 async def main(
     ftm_cls: type[RS485GatedFTM],
     modbus_config: ModbusSerialConnectionConfig,

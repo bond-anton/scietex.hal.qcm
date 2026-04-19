@@ -14,7 +14,6 @@ from scietex.hal.qcm.base.data import Material
 from scietex.hal.qcm.scietex import FtmOne
 
 
-# pylint: disable=too-many-locals,too-many-statements
 async def main(
     modbus_config: ModbusSerialConnectionConfig,
     address: int,

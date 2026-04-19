@@ -16,8 +16,6 @@ from .. import GatedFTM
 from ..data import FTMParameters, FTMStartCMD, Material, OutCTRLMode, PwmCTRLMode
 
 
-# pylint: disable=too-many-public-methods, too-many-arguments
-# pylint: disable=too-many-positional-arguments, unused-argument
 class RS485GatedFTM(GatedFTM, RS485Client):
     """Quartz crystal gated film thickness monitor"""
 
@@ -308,7 +306,6 @@ class RS485GatedFTM(GatedFTM, RS485Client):
 
     # Read FTM state in a single request
 
-    # pylint: disable=duplicate-code
     async def read_parameters(self) -> FTMParameters:
         """Read FTM Parameters"""
         self.logger.debug("%s: read_parameters call", self.label)

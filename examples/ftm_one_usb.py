@@ -1,7 +1,5 @@
 """Example of RS485 gated FTM operation."""
 
-# pylint: disable=duplicate-code
-
 import asyncio
 
 from scietex.hal.serial import SerialConnectionConfig
@@ -11,7 +9,6 @@ from scietex.hal.qcm.base.serial import SerialGatedFTM
 from scietex.hal.qcm.scietex import FtmOneUSB, find_ftm_one_usb
 
 
-# pylint: disable=too-many-locals,too-many-statements
 async def main(ftm_cls: type[SerialGatedFTM], serial_config: SerialConnectionConfig):
     """Main coroutine."""
     ftm = ftm_cls(serial_config, label="Scietex FTM", keep_connection=False)
