@@ -16,18 +16,22 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-  "msgspec[yaml] >= 0.20.0",
-  "scietex.hal.serial >= 1.3.0, < 2.0.0",
+  "msgspec[yaml] ~= 0.20.0",
+  "scietex.hal.serial >= 2.4.0, < 3.0.0",
+  "pymodbus ~= 3.15",
 ]
+
+[project.entry-points."scietex.hal.qcm.drivers"]
+cyky_tm106b_modbus = "scietex.hal.qcm.cyky.tm106b_modbus:TM106BModbus"
 
 [project.urls]
 "Homepage" = "https://github.com/bond-anton/scietex.hal.qcm"
 "Bug Tracker" = "https://github.com/bond-anton/scietex.hal.qcm/issues"
 
 [project.optional-dependencies]
-dev = ["tox>=4.45.0"]
-test = ["flake8", "pytest", "pytest-asyncio"]
-lint = ["ruff"]
+dev = ["tox>=4.46.0"]
+test = ["pytest", "pytest-asyncio", "pytest-xdist"]
+lint = ["ruff", "ty"]
 
 [tool.setuptools.dynamic]
 version = { attr = "scietex.hal.qcm.version.__version__" }

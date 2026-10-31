@@ -13,11 +13,32 @@ from scietex.hal.serial import (
 
 from ...version import __version__
 from .. import GatedFTM
-from ..data import FTMParameters, FTMStartCMD, Material, OutCTRLMode, PwmCTRLMode
+from ..data import (
+    FTMParameters,
+    FTMStartCMD,
+    GatedFTMCapabilities,
+    Material,
+    OutCTRLMode,
+    PwmCTRLMode,
+)
 
 
 class RS485GatedFTM(GatedFTM, RS485Client):
     """Quartz crystal gated film thickness monitor"""
+
+    capabilities = GatedFTMCapabilities(
+        start=True,
+        stop=True,
+        thickness_reset=True,
+        material=True,
+        z_ratio=True,
+        ftm_scale=True,
+        pwm=True,
+        pwm_scale=True,
+        gate_time=True,
+        fault_reset=True,
+        target_thickness=True,
+    )
 
     def __init__(
         self,

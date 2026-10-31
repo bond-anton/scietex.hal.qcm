@@ -18,6 +18,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .[dev,test,lint]
+      - name: Check formatting with ruff
+        run: |
+          ruff format --check $(git ls-files '*.py')
       - name: Analyzing the code with ruff
         run: |
           ruff check $(git ls-files '*.py')
+      - name: Type-check with ty
+        run: |
+          ty check src

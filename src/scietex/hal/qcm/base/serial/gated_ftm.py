@@ -14,10 +14,10 @@ def manage_connection(func):
     """Wrapper for easy serial connection opening and closing."""
 
     async def wrapper(self, *args, **kwargs):
-        self.connect()
+        self._open()
         result = await func(self, *args, **kwargs)
         if not getattr(self, "keep_connection"):
-            self.disconnect()
+            self._close()
         return result
 
     return wrapper
@@ -44,12 +44,12 @@ class SerialGatedFTM(GatedFTM):
 
     # Serial connection methods
 
-    def connect(self) -> None:
+    def _open(self) -> None:
         """Open serial connection."""
         if self._connection is None:
             self._connection = Serial(**self.con_params.to_dict())
 
-    def disconnect(self) -> None:
+    def _close(self) -> None:
         """Close serial connection."""
         if self._connection is not None:
             self._connection.close()

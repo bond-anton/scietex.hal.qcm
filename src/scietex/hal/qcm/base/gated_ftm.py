@@ -2,14 +2,28 @@
 
 from abc import ABC, abstractmethod
 
-from .data import FTMParameters, Material, OutCTRLMode, PwmCTRLMode, QCMError
+from .data import (
+    FTMParameters,
+    GatedFTMCapabilities,
+    Material,
+    OutCTRLMode,
+    PwmCTRLMode,
+    QCMError,
+)
 
 
 class GatedFTM(ABC):
     """Gated Film Thickness Monitor interface class."""
 
+    capabilities: GatedFTMCapabilities = GatedFTMCapabilities()
     error_codes: dict[int, QCMError] = {0: QCMError(code=0, message="No error")}
     error_codes_com: dict[int, QCMError] = {0: QCMError(code=0, message="No error")}
+
+    async def connect(self) -> None:
+        """Open the transport. Transports that connect lazily leave this a no-op."""
+
+    async def close(self) -> None:
+        """Close the transport. Transports that connect lazily leave this a no-op."""
 
     # Error processing methods
     @abstractmethod

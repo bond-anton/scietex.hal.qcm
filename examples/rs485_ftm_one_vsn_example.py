@@ -78,6 +78,6 @@ if __name__ == "__main__":
     vp = vsn.create(1)
     print(vp)
     connection_config = ModbusSerialConnectionConfig(port=vp[0], baudrate=19200, timeout=1)
-    asyncio.run(main(connection_config, address=1))
+    asyncio.run(main(connection_config, address=3))
 
     vsn.stop()

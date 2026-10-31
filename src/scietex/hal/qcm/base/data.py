@@ -33,6 +33,22 @@ class QCMError(msgspec.Struct, frozen=True):
         return f"QCMError(code={self.code}, message='{self.message}')"
 
 
+class GatedFTMCapabilities(msgspec.Struct, frozen=True):
+    """Optional operations a gated FTM driver supports."""
+
+    start: bool = False
+    stop: bool = False
+    thickness_reset: bool = False
+    material: bool = False
+    z_ratio: bool = False
+    ftm_scale: bool = False
+    pwm: bool = False
+    pwm_scale: bool = False
+    gate_time: bool = False
+    fault_reset: bool = False
+    target_thickness: bool = False
+
+
 class FTMParameters(msgspec.Struct, frozen=True):
     """Model for FTM operational parameters."""
 

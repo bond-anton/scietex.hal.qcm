@@ -1,7 +1,7 @@
 # scietex.hal.qcm
 
 The `scietex.hal.qcm` package is a Python library for interfacing with Quartz Microbalance (QCM).
-It provides an abstract base class (`QCM`), which in its turn inherits `scietex.hal.serial.RS485Client`.
+It provides an abstract base class (`GatedFTM`) for gated film thickness monitors.
 The concrete implementations for two models of QCM manufactured by Scietex and CYKY are provided.
 
 ## Features
