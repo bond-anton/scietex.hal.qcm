@@ -15,8 +15,9 @@ Functions:
     parse_run: Split the RUN word into running state and thickness reset.
     encode_run: Build the RUN word from its two fields.
     parse_averaging: Map the rate-mode code to an averaging window size.
-    code_to_baudrate: Map the baudrate register code to bits per second.
-    baudrate_to_code: Map bits per second to the baudrate register code.
+    parse_baudrate: Decode the raw register 15 word to bits per second; the
+        rate code sits in bits 12-15.
+    encode_baudrate: Encode bits per second into the raw register 15 word.
     decode_parameters: Build FTMParameters from a register block.
 """
 
@@ -59,6 +60,10 @@ BAUDRATE_CODES: dict[int, int] = {
     5: 38400,
 }
 
+#: Register 15 carries the rate code in bits 12-15; bits 0-11 read as zero.
+BAUDRATE_SHIFT = 12
+BAUDRATE_MASK = 0xF
+
 
 def parse_con(con: int) -> tuple[int, int, int]:
     """
@@ -100,17 +105,22 @@ def parse_averaging(c: int) -> int:
     return 0
 
 
-def code_to_baudrate(code: int) -> int:
-    """Map the baudrate register code to bits per second; 0 when unknown."""
-    return BAUDRATE_CODES.get(code, 0)
+def parse_baudrate(word: int) -> int:
+    """Decode a raw register 15 word to bits per second; 0 when unknown."""
+    return BAUDRATE_CODES.get((word >> BAUDRATE_SHIFT) & BAUDRATE_MASK, 0)
 
 
-def baudrate_to_code(baudrate: int) -> int:
-    """Map bits per second to the baudrate register code; 9600 when unknown."""
+def encode_baudrate(baudrate: int) -> int:
+    """
+    Encode bits per second into a raw register 15 word.
+
+    Raises:
+        ValueError: If the baudrate is not one of the supported rates.
+    """
     for code, value in BAUDRATE_CODES.items():
         if value == baudrate:
-            return code
-    return 3
+            return code << BAUDRATE_SHIFT
+    raise ValueError(f"Unsupported baudrate: {baudrate}")
 
 
 def decode_parameters(registers: list[int]) -> FTMParameters:

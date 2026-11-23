@@ -1,5 +1,6 @@
 """Example of RS485 gated FTM operation."""
 
+import argparse
 import asyncio
 
 from scietex.hal.serial import ModbusSerialConnectionConfig
@@ -22,6 +23,7 @@ async def main(
     orig_address = await ftm.get_address()
     print(f"BR: {orig_baudrate}, ADDR: {orig_address}")
     """
+    The baudrate is stored immediately but applied only after a device restart.
     new_baudrate = 9600
     print(f"Changing baudrate to {new_baudrate}")
     await ftm.set_baudrate(new_baudrate)
@@ -99,12 +101,23 @@ async def main(
 
 
 if __name__ == "__main__":
-    ftm_models = [FtmOne, TM106B]
-    rs485_ports = find_rs485()
-    if rs485_ports:
+    parser = argparse.ArgumentParser(description="Exercise a RS485 gated FTM.")
+    parser.add_argument(
+        "--model", choices=["TM106B", "FtmOne"], default="TM106B", help="FTM model."
+    )
+    parser.add_argument(
+        "--port", default=None, help="Serial port; defaults to the first RS485 port."
+    )
+    parser.add_argument("--address", type=int, default=3, help="RS485 address.")
+    parser.add_argument("--baudrate", type=int, default=9600, help="RS485 baudrate.")
+    args = parser.parse_args()
+
+    ftm_models = {"TM106B": TM106B, "FtmOne": FtmOne}
+    port = args.port or next(iter(find_rs485()), None)
+    if port is not None:
         connection_config = ModbusSerialConnectionConfig(
-            port=rs485_ports[0], baudrate=19200, timeout=0.5
+            port=port, baudrate=args.baudrate, timeout=0.5
         )
-        asyncio.run(main(ftm_models[0], connection_config, address=1))
+        asyncio.run(main(ftm_models[args.model], connection_config, address=args.address))
     else:
         print("No RS485 ports found.")

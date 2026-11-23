@@ -41,18 +41,28 @@ def test_parse_averaging(code: int, window: int):
 
 @pytest.mark.parametrize(
     ("baudrate", "code"),
-    [(1200, 0), (2400, 1), (4800, 2), (9600, 3), (19200, 4), (38400, 5)],
+    [
+        (1200, 0x0000),
+        (2400, 0x1000),
+        (4800, 0x2000),
+        (9600, 0x3000),
+        (19200, 0x4000),
+        (38400, 0x5000),
+    ],
 )
 def test_baudrate_round_trip(baudrate: int, code: int):
-    """Baudrate codes round-trip through both directions."""
-    assert registers.baudrate_to_code(baudrate) == code
-    assert registers.code_to_baudrate(code) == baudrate
+    """The rate code occupies bits 12-15 of register 15."""
+    assert registers.encode_baudrate(baudrate) == code
+    assert registers.parse_baudrate(code) == baudrate
 
 
-def test_baudrate_unknown_values():
-    """Unknown values fall back to 9600 / code 0."""
-    assert registers.baudrate_to_code(12345) == 3
-    assert registers.code_to_baudrate(99) == 0
+def test_baudrate_ignores_low_bits_and_rejects_unknown_rates():
+    """Bits 0-11 are ignored on decode; unknown rates are rejected on encode."""
+    assert registers.parse_baudrate(0x4ABC) == 19200
+    assert registers.parse_baudrate(0x4001) == 19200
+    assert registers.parse_baudrate(0x6000) == 0
+    with pytest.raises(ValueError):
+        registers.encode_baudrate(12345)
 
 
 def test_decode_parameters_live_block():

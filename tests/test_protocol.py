@@ -3,9 +3,10 @@
 import asyncio
 
 import pytest
+from scietex.hal.serial import ModbusSerialConnectionConfig
 
 from scietex.hal.qcm.base.data import Material, PwmCTRLMode
-from scietex.hal.qcm.cyky import registers
+from scietex.hal.qcm.cyky import TM106B, registers
 from scietex.hal.qcm.cyky.protocol import TM106BProtocolMixin
 
 
@@ -62,6 +63,21 @@ class FakeTransport(TM106BProtocolMixin):
         )
 
 
+class FakeTM106B(FakeTransport):
+    """Fake transport bound to the real TM106B baudrate helpers.
+
+    The helpers are pulled off ``TM106B`` directly: inheriting the class would
+    drag in the RS485 client, whose label setter needs a live transport.
+    """
+
+    get_baudrate = TM106B.get_baudrate
+    set_baudrate = TM106B.set_baudrate
+
+    def __init__(self, values: dict[int, int] | None = None):
+        FakeTransport.__init__(self, values)
+        self.con_params = ModbusSerialConnectionConfig(port="fake", baudrate=19200)
+
+
 @pytest.fixture
 def transport() -> FakeTransport:
     """A transport preloaded with the live device register block."""
@@ -76,7 +92,7 @@ def transport() -> FakeTransport:
             registers.REG_FTM_SCALE: 1000,
             registers.REG_PWM_SCALE: 5000,
             registers.REG_ADDRESS: 3,
-            registers.REG_BAUDRATE: 4,
+            registers.REG_BAUDRATE: 0x4000,  # 19200 (code 4 << 12)
         }
     )
 
@@ -184,3 +200,17 @@ def test_target_thickness_unsupported(transport: FakeTransport):
     """The TM106B has no target thickness register."""
     assert asyncio.run(transport.get_target_thickness()) == 0.0
     assert asyncio.run(transport.set_target_thickness(1000.0)) == 0.0
+
+
+def test_get_baudrate_decodes_high_nibble():
+    """Register 15 decodes the rate code from bits 12-15."""
+    ftm = FakeTM106B({registers.REG_BAUDRATE: 0x4000})
+    assert asyncio.run(ftm.get_baudrate()) == 19200
+
+
+def test_set_baudrate_writes_shifted_word_and_keeps_con_params():
+    """A baudrate write stores the shifted code without switching the link."""
+    ftm = FakeTM106B({registers.REG_BAUDRATE: 0x4000})
+    assert asyncio.run(ftm.set_baudrate(9600)) == 9600
+    assert ftm.writes[-1] == (registers.REG_BAUDRATE, 0x3000)
+    assert ftm.con_params.baudrate == 19200

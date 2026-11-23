@@ -70,12 +70,19 @@ class TM106B(TM106BProtocolMixin, RS485GatedFTM):
         return 0
 
     async def get_baudrate(self) -> int:
-        baudrate_code = await self.read_register(registers.REG_BAUDRATE)
-        if isinstance(baudrate_code, int):
-            return registers.code_to_baudrate(baudrate_code)
+        """Get the RS485 baudrate from register 15; bits 0-11 are ignored."""
+        word = await self.read_register(registers.REG_BAUDRATE)
+        if isinstance(word, int):
+            return registers.parse_baudrate(word)
         return 0
 
     async def set_baudrate(self, baudrate: int) -> int:
+        """
+        Store the RS485 baudrate in register 15.
+
+        The device persists the value immediately but applies it only after a
+        restart, so the current link keeps working at the old rate.
+        """
         if baudrate <= 1200:
             new_baudrate = 1200
         elif baudrate <= 2400:
@@ -88,10 +95,10 @@ class TM106B(TM106BProtocolMixin, RS485GatedFTM):
             new_baudrate = 19200
         else:
             new_baudrate = 38400
-        await self.write_register(registers.REG_BAUDRATE, registers.baudrate_to_code(new_baudrate))
-        new_con_params = self.con_params
-        new_con_params.baudrate = new_baudrate
-        self.con_params = new_con_params
+        await self.write_register(registers.REG_BAUDRATE, registers.encode_baudrate(new_baudrate))
+        self.logger.warning(
+            "%s: baudrate %d stored, applied after device restart.", self.label, new_baudrate
+        )
         return await self.get_baudrate()
 
     async def check_connection(self) -> bool:
